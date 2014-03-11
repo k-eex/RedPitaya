@@ -59,7 +59,8 @@
   var plot_options = {
     colors: ['#3276B1', '#D2322D', '#009900'],    // channel1, channel2, trigger line
     lines: { lineWidth: 1 },
-    selection: { mode: 'xy' },
+    selection: { mode: null },
+    pan: { interactive: true },
     zoom: { interactive: true, trigger: null },
     xaxis: { min: xmin, max: xmax },
     grid: { borderWidth: 0 },
@@ -1711,13 +1712,13 @@
           <span class="glyphicon glyphicon-retweet"></span> Reset zoom
         </button>  
         <div id="selzoompan" class="btn-group" data-toggle="buttons">
-          <button id="btn_zoomin" class="btn btn-primary" onclick="selectTool.call(this, 'zoomin')" style="display: none">
+          <button id="btn_zoomin" class="btn btn-default" onclick="selectTool.call(this, 'zoomin')" style="display: none">
             <span class="glyphicon glyphicon-zoom-in"></span>
           </button>
           <button id="btn_zoomout" class="btn btn-default" onclick="selectTool.call(this, 'zoomout')" style="display: none">
             <span class="glyphicon glyphicon-zoom-out"></span>
           </button>
-          <button id="btn_pan" class="btn btn-default" onclick="selectTool.call(this, 'pan')" style="display: none">
+          <button id="btn_pan" class="btn btn-primary" onclick="selectTool.call(this, 'pan')" style="display: none">
             <span class="glyphicon glyphicon-move"></span>
           </button>
           <button id="btn_zoompan" class="btn btn-primary btn-lg" onclick="selectTool.call(this, 'zoompan')" style="display: none">
