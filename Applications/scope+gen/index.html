@@ -226,7 +226,52 @@
       }
     });
     
-    $('#range_y_minus, #range_y_plus').on('click', function() {
+    $('#xtitle').on('mousewheel', function(event) { 
+      event = window.event || event;
+      var axes = plot.getAxes();
+      var xrange = axes.xaxis.max - axes.xaxis.min;
+      var nearest = (event.wheelDelta > 0 ? xrange*1.1 : xrange/1.1);
+      
+      if(nearest && plot) {
+        var options = plot.getOptions();
+        var axes = plot.getAxes();
+        var min = (options.xaxes[0].min !== null ? options.xaxes[0].min : axes.xaxis.min);
+        var max = (options.xaxes[0].max !== null ? options.xaxes[0].max : axes.xaxis.max);
+        var unit = $(this).data('unit');
+        
+        // Convert nanoseconds to milliseconds.
+        if(unit == 'ns') {
+          nearest /= 1000;
+        }
+        
+        var half = Math.abs(nearest - (max - min)) / 2;
+        var zoomin = (max - min > nearest ? true : false);
+        
+        if(zoomin) {
+          min += half;
+          max -= half;
+        }
+        else {
+          min -= half;
+          max += half;
+        }
+        
+        options.xaxes[0].min = min;
+        options.xaxes[0].max = max;
+
+        plot.setupGrid();
+        plot.draw();
+        
+        params.local.xmin = min;
+        params.local.xmax = max;       
+        
+        updateRanges();
+        $(this).tooltip($(this).prop('disabled') === true ? 'hide' : 'show');
+        sendParams(true);
+      }
+    });
+    
+   $('#range_y_minus, #range_y_plus').on('click', function() {
       var nearest = $(this).data('nearest');
       
       if(nearest && plot) {
@@ -265,6 +310,48 @@
       }
     });
     
+     $('#ytitle').on('mousewheel', function(event) {
+      event = window.event || event;
+      var axes = plot.getAxes();
+      var yrange = axes.yaxis.max - axes.yaxis.min;
+      var nearest = (event.wheelDelta > 0 ? yrange*1.1 : yrange/1.1);
+      
+      if(nearest && plot) {
+        var options = plot.getOptions();
+        var axes = plot.getAxes();
+        var min = (options.yaxes[0].min !== null ? options.yaxes[0].min : axes.yaxis.min);
+        var max = (options.yaxes[0].max !== null ? options.yaxes[0].max : axes.yaxis.max);
+        var unit = $(this).data('unit');
+        
+        // Convert millivolts to volts.
+        if(unit == 'mV') {
+          nearest /= 1000;
+        }
+        
+        var half = Math.abs(nearest - (max - min)) / 2;
+        var zoomin = (max - min > nearest ? true : false);
+        
+        if(zoomin) {
+          min += half;
+          max -= half;
+        }
+        else {
+          min -= half;
+          max += half;
+        }
+        
+        options.yaxes[0].min = min;
+        options.yaxes[0].max = max;
+
+        plot.setupGrid();
+        plot.draw();
+               
+        updateRanges();
+        $(this).tooltip($(this).prop('disabled') === true ? 'hide' : 'show');
+        updateTriggerSlider();
+      }
+    });
+
     $('#offset_x_minus, #offset_x_plus').on('click', function() {
       if(plot) {
         var direction = ($(this).attr('id') == 'offset_x_minus' ? 'left' : 'right');
