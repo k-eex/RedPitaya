@@ -228,32 +228,28 @@
     
     $('#xtitle').on('mousewheel', function(event) { 
       event = window.event || event;
-      var axes = plot.getAxes();
-      var xrange = axes.xaxis.max - axes.xaxis.min;
-      var nearest = (event.wheelDelta > 0 ? xrange*1.1 : xrange/1.1);
+      var zoomfactor = (event.wheelDelta < 0 ? 1.1 : 1/1.1); // 10%
       
-      if(nearest && plot) {
+      if(plot) {
         var options = plot.getOptions();
         var axes = plot.getAxes();
         var min = (options.xaxes[0].min !== null ? options.xaxes[0].min : axes.xaxis.min);
         var max = (options.xaxes[0].max !== null ? options.xaxes[0].max : axes.xaxis.max);
         var unit = $(this).data('unit');
         
-        // Convert nanoseconds to milliseconds.
-        if(unit == 'ns') {
-          nearest /= 1000;
-        }
+        var epsilon = (max - min) * 0.02; // 2% of whole range
         
-        var half = Math.abs(nearest - (max - min)) / 2;
-        var zoomin = (max - min > nearest ? true : false);
-        
-        if(zoomin) {
+        if(min - epsilon <= 0 && max + epsilon >=0) {
+          // trigger visible - keep in place
+          // epsilon tolerance is because "auto" places trigger slightly outside the area
+          min *= zoomfactor;
+          max *= zoomfactor;
+        }else{
+          // keep center in place
+          half = (max - min) / 2;
+          half *= (1 - zoomfactor);
           min += half;
           max -= half;
-        }
-        else {
-          min -= half;
-          max += half;
         }
         
         options.xaxes[0].min = min;
@@ -314,7 +310,7 @@
       event = window.event || event;
       var axes = plot.getAxes();
       var yrange = axes.yaxis.max - axes.yaxis.min;
-      var nearest = (event.wheelDelta > 0 ? yrange*1.1 : yrange/1.1);
+      var nearest = (event.wheelDelta < 0 ? yrange*1.1 : yrange/1.1);
       
       if(nearest && plot) {
         var options = plot.getOptions();
