@@ -228,6 +228,7 @@
     
     $('#xtitle').on('mousewheel', function(event) { 
       event = window.event || event;
+      event.preventDefault();
       var zoomfactor = (event.wheelDelta < 0 ? 1.1 : 1/1.1); // 10%
       
       if(plot) {
@@ -308,6 +309,7 @@
     
      $('#ytitle').on('mousewheel', function(event) {
       event = window.event || event;
+      event.preventDefault();
       var axes = plot.getAxes();
       var yrange = axes.yaxis.max - axes.yaxis.min;
       var nearest = (event.wheelDelta < 0 ? yrange*1.1 : yrange/1.1);
